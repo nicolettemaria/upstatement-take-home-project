@@ -1,8 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
+import '@atlaskit/css-reset';
 import * as serviceWorker from './serviceWorker';
+import { setAutoFreeze } from 'immer';
+import App from './App';
+
+setAutoFreeze(false);
 
 ReactDOM.render(<App />, document.getElementById('root'));
 

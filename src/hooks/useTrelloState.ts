@@ -3,23 +3,32 @@ import * as React from 'react';
 import { ITrelloState } from './trello';
 
 export interface ITrelloStateManagement {
+  timeRequested: Date;
   state: ITrelloState;
 }
 
 // provide trello state to components
 export default function useTrelloState(): ITrelloStateManagement {
   // set initial Trello state
-  const [trelloState, setTrelloState] = React.useState<ITrelloState>({
-    cards: [],
-    lists: []
+  const [trelloState, setTrelloState] = React.useState<ITrelloStateManagement>({
+    timeRequested: new Date(),
+    state: {
+      cards: [],
+      lists: []
+    }
   });
 
   // do network call on component mount
   React.useEffect(() => {
+    const newQueryTimeRequested = new Date();
+
     // wait for network call to return, then set state, else catch error
     getTrelloState()
       .then(newState => {
-        setTrelloState(newState);
+        setTrelloState({
+          state: newState,
+          timeRequested: newQueryTimeRequested
+        });
       })
       .catch(e => {
         throw e;
@@ -27,9 +36,7 @@ export default function useTrelloState(): ITrelloStateManagement {
       });
   }, []);
 
-  return {
-    state: trelloState
-  };
+  return trelloState;
 }
 
 // retrieve trello state via network call

@@ -30,16 +30,16 @@ export default function useTrelloState(): ITrelloStateManagement {
 
     // wait for network call to return, then set state, else catch error
     getTrelloState()
-        .then(newState => {
-          setTrelloState({
-            state: newState,
-            timeRequested: newQueryTimeRequested
-          });
-        })
-        .catch(e => {
-          throw e;
-          // TODO surface to the user an error occurred
+      .then(newState => {
+        setTrelloState({
+          state: newState,
+          timeRequested: newQueryTimeRequested
         });
+      })
+      .catch(e => {
+        throw e;
+        // TODO surface to the user an error occurred
+      });
   };
 
   // do network call on component mount
@@ -78,7 +78,12 @@ async function getTrelloState(): Promise<ITrelloState> {
 }
 
 async function moveTrelloCard(cardId: string, pos: number, listId?: string): Promise<void> {
-  await fetch(`https://api.trello.com/1/cards/${cardId}?pos=${pos}${listId ? `&idList=${listId}` : ""}&${baseParams}`, {
-    method: "PUT"
-  })
+  await fetch(
+    `https://api.trello.com/1/cards/${cardId}?pos=${pos}${
+      listId ? `&idList=${listId}` : ''
+    }&${baseParams}`,
+    {
+      method: 'PUT'
+    }
+  );
 }

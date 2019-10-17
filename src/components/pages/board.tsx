@@ -85,11 +85,17 @@ class BoardPage extends React.Component<IBoardPageProps, IBoardPageState> {
     const start = this.state.lists.find(list => list.id === source.droppableId)!;
     const finish = this.state.lists.find(list => list.id === destination.droppableId)!;
 
-    const getCardAboveMovedCard = (movedCardId: string, inList: IBoardList, cards: IBoardCard[]): IBoardCard | null => {
+    const getCardAboveMovedCard = (
+      movedCardId: string,
+      inList: IBoardList,
+      cards: IBoardCard[]
+    ): IBoardCard | null => {
       const movedIndex = inList.cardIds.indexOf(movedCardId);
 
       if (movedIndex > -1) {
-        return movedIndex === 0 ? null : cards.find(card => card.id === inList.cardIds[movedIndex - 1])!;
+        return movedIndex === 0
+          ? null
+          : cards.find(card => card.id === inList.cardIds[movedIndex - 1])!;
       } else {
         throw new Error('Moved card not found in list.');
       }
@@ -110,8 +116,8 @@ class BoardPage extends React.Component<IBoardPageProps, IBoardPageState> {
       const destinationList = newState.lists.find(list => list.id === finish.id)!;
       this.props.moveCard(
         newState.cards.find(card => card.id === draggableId)!,
-          getCardAboveMovedCard(draggableId, destinationList, newState.cards),
-          destinationList.id
+        getCardAboveMovedCard(draggableId, destinationList, newState.cards),
+        destinationList.id
       );
       return;
     }
@@ -134,9 +140,9 @@ class BoardPage extends React.Component<IBoardPageProps, IBoardPageState> {
     this.setState(newState);
     const destinationList = newState.lists.find(list => list.id === finish.id)!;
     this.props.moveCard(
-        newState.cards.find(card => card.id === draggableId)!,
-        getCardAboveMovedCard(draggableId, destinationList, newState.cards),
-        destinationList.id
+      newState.cards.find(card => card.id === draggableId)!,
+      getCardAboveMovedCard(draggableId, destinationList, newState.cards),
+      destinationList.id
     );
   };
 

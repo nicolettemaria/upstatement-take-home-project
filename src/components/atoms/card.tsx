@@ -30,7 +30,6 @@ const Card: React.FC<ICardProps> = props => {
           ref={provided.innerRef}
           isDragging={snapshot.isDragging}
         >
-          <div>{props.card.pos}</div>
           {props.card.name}
         </Container>
       )}

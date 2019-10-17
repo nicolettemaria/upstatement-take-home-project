@@ -47,6 +47,8 @@ export enum ELabelColor {
 
 const Container = styled.div`
   display: flex;
+  justify-content: center;
+  align-items: flex-start;
 `;
 
 export interface IBoardPageProps {

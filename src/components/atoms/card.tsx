@@ -8,11 +8,13 @@ interface IContainerProps {
 }
 
 const Container = styled.div<IContainerProps>`
-  border: 1px solid lightgrey;
-  border-radius: 2px;
+  // border: 1px solid lightgrey;
+  border-radius: 3px;
   padding: 8px;
   margin-bottom: 8px;
-  background-color: ${props => (props.isDragging ? 'lightgreen' : 'white')};
+  text-align: left;
+  box-shadow: ${props => (props.isDragging ? '0px 15px 15px -10px rgba(0, 0, 0, 0.1)' : '0px 2px 2px -2px rgba(0,0,0,0.1)')};
+  background-color: white;
 `;
 
 export interface ICardProps {

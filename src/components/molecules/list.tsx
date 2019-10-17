@@ -6,16 +6,18 @@ import { IBoardCard, IBoardList } from '../pages/board';
 
 const Container = styled.div`
   margin: 8px;
-  border: 1px solid lightgrey;
-  border-radius: 2px;
-  width: 220px;
+  width: 272px;
+  text-align: left;
+  border-radius: 3px;
+  background-color: #ebecf0;
 
   display: flex;
   flex-direction: column;
 `;
 
 const Title = styled.h3`
-  padding: 8px;
+  padding: 15px 15px 2px 15px;
+  font-size: 15px;
 `;
 
 interface ICardListProps {
@@ -24,7 +26,6 @@ interface ICardListProps {
 
 const CardList = styled.div<ICardListProps>`
   padding: 8px;
-  background-color: ${props => (props.isDraggingOver ? 'skyblue' : 'white')}
   flex-grow: 1;
   min-height: 100px;
 `;

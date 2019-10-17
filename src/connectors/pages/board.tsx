@@ -3,19 +3,26 @@ import useTrelloState from '../../hooks/useTrelloState';
 import BoardPage from '../../components/pages/board';
 
 const ConnectedBoardPage: React.FC = () => {
-  const trelloState = useTrelloState();
-  const filteredCards = trelloState.state.cards.filter(card =>
+  const trelloStateManagement = useTrelloState();
+  const filteredCards = trelloStateManagement.state.cards.filter(card =>
     card.labels.map(label => label.name.toLowerCase()).includes('client')
   );
 
   return (
     <BoardPage
-      key={trelloState.timeRequested.getTime()}
+      key={trelloStateManagement.timeRequested.getTime()}
       cards={filteredCards}
-      lists={trelloState.state.lists.map(list => ({
-        ...list,
-        cardIds: filteredCards.filter(card => card.idList === list.id).map(card => card.id)
-      })).filter(list => list.cardIds.length > 0 || list.name.toLowerCase() === "for review")}
+      lists={trelloStateManagement.state.lists
+        .map(list => ({
+          ...list,
+          cardIds: filteredCards.filter(card => card.idList === list.id).map(card => card.id)
+        }))
+        .filter(list => list.cardIds.length > 0 || list.name.toLowerCase() === 'for review')}
+
+      moveCard={(cardToMove, afterCard, listId) => {
+        // calculate new position, pass to trello hook
+        trelloStateManagement.moveCard(cardToMove.id, afterCard ? afterCard.pos + 1 : 0, listId);
+      }}
     />
   );
 };

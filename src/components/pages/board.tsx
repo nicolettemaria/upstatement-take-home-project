@@ -1,10 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import {
-  DragDropContext,
-  DropResult,
-  ResponderProvided
-} from 'react-beautiful-dnd';
+import { DragDropContext, DropResult, ResponderProvided } from 'react-beautiful-dnd';
 import List from '../molecules/list';
 import produce from 'immer';
 
@@ -56,6 +52,8 @@ const Container = styled.div`
 export interface IBoardPageProps {
   cards: IBoardCard[];
   lists: IBoardList[];
+
+  moveCard(cardToMove: IBoardCard, afterCard: IBoardCard | null, listId?: string): void;
 }
 
 export interface IBoardPageState {
@@ -87,63 +85,18 @@ class BoardPage extends React.Component<IBoardPageProps, IBoardPageState> {
     const start = this.state.lists.find(list => list.id === source.droppableId)!;
     const finish = this.state.lists.find(list => list.id === destination.droppableId)!;
 
+    const getCardAboveMovedCard = (movedCardId: string, inList: IBoardList, cards: IBoardCard[]): IBoardCard | null => {
+      const movedIndex = inList.cardIds.indexOf(movedCardId);
+
+      if (movedIndex > -1) {
+        return movedIndex === 0 ? null : cards.find(card => card.id === inList.cardIds[movedIndex - 1])!;
+      } else {
+        throw new Error('Moved card not found in list.');
+      }
+    };
+
     if (start.id === finish.id) {
       // move within list
-
-      /*
-      For example, if you want to insert Card C between Card A and Card B:
-      Card A - Pos 16
-      Card B - Pos 32
-      Card C - Pos 64
-      (16 + 32) / 2 = 24. Set Card C Pos to 24.
-
-      Card A - Pos 16
-      Card C - Pos 24
-      Card B - Pos 32
-      */
-
-      // const newState = produce(this.state, draftState => {
-      //   const cards = draftState.cards
-      //     .filter(card => card.idList === finish.id)
-      //     .sort((a, b) => a.pos - b.pos);
-      //
-      //   const cardAboveDestination = destination.index > 0 ? cards[destination.index - 1] : null;
-      //   const cardBelowDestination =
-      //     destination.index < cards.length - 1 ? cards[destination.index + 1] : null;
-      //
-      //   const draggingCard = cards.find(card => card.id === draggableId)!;
-      //
-      //   console.log(
-      //     cardAboveDestination && cardAboveDestination.pos,
-      //     draggingCard.pos,
-      //     cardBelowDestination && cardBelowDestination.pos
-      //   );
-      //   console.log(cards.length);
-      //   console.log(destination.index);
-      //
-      //   if (cardAboveDestination === null && cardBelowDestination !== null) {
-      //     console.log('TOP');
-      //     // at the top
-      //     draggingCard.pos = cardBelowDestination.pos - 65535;
-      //   } else if (cardBelowDestination === null && cardAboveDestination !== null) {
-      //     console.log('BOTTOM');
-      //     // at the bottom
-      //     draggingCard.pos = cardAboveDestination.pos + 65535;
-      //   } else if (cardBelowDestination === null && cardAboveDestination === null) {
-      //     console.log('ONLY');
-      //     // first in list
-      //     draggingCard.pos = 65535;
-      //   } else {
-      //     console.log('IN BETWEEN');
-      //     // in between other cards
-      //     draggingCard.pos = (cardAboveDestination!.pos + cardBelowDestination!.pos) / 2;
-      //   }
-      //
-      //   console.log(draggingCard.pos);
-      //
-      //   return draftState;
-      // });
-
       const newState = produce(this.state, draftState => {
         const startList = draftState.lists.find(list => list.id === start.id)!;
 
@@ -154,11 +107,16 @@ class BoardPage extends React.Component<IBoardPageProps, IBoardPageState> {
       });
 
       this.setState(newState);
+      const destinationList = newState.lists.find(list => list.id === finish.id)!;
+      this.props.moveCard(
+        newState.cards.find(card => card.id === draggableId)!,
+          getCardAboveMovedCard(draggableId, destinationList, newState.cards),
+          destinationList.id
+      );
       return;
     }
 
     // move between lists
-
     const newState = produce(this.state, draftState => {
       const startList = draftState.lists.find(list => list.id === start.id)!;
 
@@ -174,6 +132,12 @@ class BoardPage extends React.Component<IBoardPageProps, IBoardPageState> {
     });
 
     this.setState(newState);
+    const destinationList = newState.lists.find(list => list.id === finish.id)!;
+    this.props.moveCard(
+        newState.cards.find(card => card.id === draggableId)!,
+        getCardAboveMovedCard(draggableId, destinationList, newState.cards),
+        destinationList.id
+    );
   };
 
   render() {

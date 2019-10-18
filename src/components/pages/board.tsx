@@ -32,30 +32,68 @@ export interface IBoardLabel {
 }
 
 export enum ELabelColor {
-  yellow,
-  purple,
-  blue,
-  red,
-  green,
-  orange,
-  black,
-  sky,
-  pink,
-  lime,
-  null
+  yellow = 'yellow',
+  purple = 'purple',
+  blue = 'blue',
+  red = 'red',
+  green = 'green',
+  orange = 'orange',
+  black = 'black',
+  sky = 'sky',
+  pink = 'pink',
+  lime = 'lime',
+  null = 'null'
+}
+
+export function labelColorToString(color: ELabelColor): string | null {
+  switch (color) {
+    case ELabelColor.yellow:
+      return '#e0c217';
+    case ELabelColor.purple:
+      return '#c377e0';
+    case ELabelColor.blue:
+      return '#0079bf';
+    case ELabelColor.red:
+      return '#eb5a46';
+    case ELabelColor.green:
+      return '#61bd4f';
+    case ELabelColor.orange:
+      return '#ff9f1a';
+    case ELabelColor.sky:
+      return '#00c2e0';
+    case ELabelColor.pink:
+      return '#ff78cb';
+    case ELabelColor.lime:
+      return '#51e898';
+    case ELabelColor.black:
+      return '#344563';
+    case ELabelColor.null:
+      return null;
+  }
 }
 
 const Container = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  white-space: nowrap;
+  overflow-x: scroll;
+  min-height: 75vh;
+
+  & > * {
+    display: inline-block;
+    white-space: normal;
+    vertical-align: top;
+  }
 `;
 
 export interface IBoardPageProps {
   cards: IBoardCard[];
   lists: IBoardList[];
 
-  moveCard(cardToMove: IBoardCard, afterCard: IBoardCard | null, listId?: string): void;
+  moveCard(
+    cardToMove: IBoardCard,
+    cardAbove: IBoardCard | null,
+    cardBelow: IBoardCard | null,
+    listId?: string
+  ): void;
 }
 
 export interface IBoardPageState {
@@ -103,6 +141,22 @@ class BoardPage extends React.Component<IBoardPageProps, IBoardPageState> {
       }
     };
 
+    const getCardBelowMovedCard = (
+      movedCardId: string,
+      inList: IBoardList,
+      cards: IBoardCard[]
+    ): IBoardCard | null => {
+      const movedIndex = inList.cardIds.indexOf(movedCardId);
+
+      if (movedIndex > -1) {
+        return movedIndex === inList.cardIds.length - 1
+          ? null
+          : cards.find(card => card.id === inList.cardIds[movedIndex + 1])!;
+      } else {
+        throw new Error('Moved card not found in list.');
+      }
+    };
+
     if (start.id === finish.id) {
       // move within list
       const newState = produce(this.state, draftState => {
@@ -119,6 +173,7 @@ class BoardPage extends React.Component<IBoardPageProps, IBoardPageState> {
       this.props.moveCard(
         newState.cards.find(card => card.id === draggableId)!,
         getCardAboveMovedCard(draggableId, destinationList, newState.cards),
+        getCardBelowMovedCard(draggableId, destinationList, newState.cards),
         destinationList.id
       );
       return;
@@ -144,6 +199,7 @@ class BoardPage extends React.Component<IBoardPageProps, IBoardPageState> {
     this.props.moveCard(
       newState.cards.find(card => card.id === draggableId)!,
       getCardAboveMovedCard(draggableId, destinationList, newState.cards),
+      getCardBelowMovedCard(draggableId, destinationList, newState.cards),
       destinationList.id
     );
   };
@@ -152,12 +208,10 @@ class BoardPage extends React.Component<IBoardPageProps, IBoardPageState> {
     return (
       <DragDropContext onDragEnd={this.onDragEnd}>
         <Container>
-          {/* TODO: Order lists properly */}
           {this.state.lists.map(list => {
             const cards = list.cardIds.map(
               cardId => this.state.cards.find(card => card.id === cardId)!
             );
-
             return <List key={list.id} list={list} cards={cards} />;
           })}
         </Container>
@@ -165,36 +219,5 @@ class BoardPage extends React.Component<IBoardPageProps, IBoardPageState> {
     );
   }
 }
-
-// const BoardPage: React.FC<IBoardPageProps> = props => {
-//   return (
-//     <div>
-//       {props.cards.map((card, i) => (
-//         <div key={i} style={{ padding: 10 }}>
-//           <h3>{card.name}</h3>
-//           <div>
-//             {card.labels.map((label, labelI) => (
-//               <div key={labelI}>{label.name}</div>
-//             ))}
-//           </div>
-//         </div>
-//       ))}
-//     </div>
-//   );
-// };
-
-//   return <div>{props.cards.map((card, i) => {
-//       return <div key={i} style={{ padding: 10 }}>
-//           <h3>{card.name}</h3>
-//           <div>
-//               {card.labels.map((label, labelI) => {
-//                   return <div key={labelI}>
-//                       {label.name}
-//                   </div>
-//               })}
-//           </div>
-//       </div>
-//   })}</div>;
-// };
 
 export default BoardPage;

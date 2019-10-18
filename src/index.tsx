@@ -4,6 +4,7 @@ import '@atlaskit/css-reset';
 import * as serviceWorker from './serviceWorker';
 import { setAutoFreeze } from 'immer';
 import App from './App';
+import './index.css';
 
 setAutoFreeze(false);
 

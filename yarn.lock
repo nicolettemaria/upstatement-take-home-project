@@ -1210,6 +1210,12 @@
     "@types/prop-types" "*"
     "@types/react" "*"
 
+"@types/react-timeago@^4.1.1":
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/@types/react-timeago/-/react-timeago-4.1.1.tgz#14c24cb8c1299379d9c2941ca3373f849d8bc78a"
+  dependencies:
+    "@types/react" "*"
+
 "@types/react@*", "@types/react@16.9.5":
   version "16.9.5"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.5.tgz#079dabd918b19b32118c25fd00a786bb6d0d5e51"
@@ -7286,6 +7292,10 @@ react-scripts@3.2.0:
     workbox-webpack-plugin "4.3.1"
   optionalDependencies:
     fsevents "2.0.7"
+
+react-timeago@^4.4.0:
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/react-timeago/-/react-timeago-4.4.0.tgz#4520dd9ba63551afc4d709819f52b14b9343ba2b"
 
 react@^16.10.2:
   version "16.10.2"

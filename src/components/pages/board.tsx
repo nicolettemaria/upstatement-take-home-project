@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { DragDropContext, DropResult, ResponderProvided } from 'react-beautiful-dnd';
 import List from '../molecules/list';
 import produce from 'immer';
+import TimeAgo from 'react-timeago';
 
 export interface IBoardList {
   id: string; // ID of the list
@@ -10,8 +11,7 @@ export interface IBoardList {
   closed: boolean; // whether the list is closed
   idBoard: string; // ID of the board the list is on
   pos: number; // position of the list on the board
-
-  cardIds: string[];
+  cardIds: string[]; // IDs of cards in list
 }
 
 export interface IBoardCard {
@@ -84,10 +84,34 @@ const Container = styled.div`
   }
 `;
 
+const BoardTitle = styled.h1`
+  display: inline-block;
+  font-weight: 600;
+  text-align: left;
+  margin-bottom: 15px;
+`;
+
+const RefreshBanner = styled.div`
+  display: inline-block;
+  margin-left: 20px;
+  opacity: 0.5;
+`;
+
+const RefreshLink = styled.a`
+  cursor: pointer;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: none;
+  }
+`;
+
 export interface IBoardPageProps {
   cards: IBoardCard[];
   lists: IBoardList[];
+  lastFetchDate: Date;
 
+  refetch(): Promise<void>;
   moveCard(
     cardToMove: IBoardCard,
     cardAbove: IBoardCard | null,
@@ -206,16 +230,33 @@ class BoardPage extends React.Component<IBoardPageProps, IBoardPageState> {
 
   render() {
     return (
-      <DragDropContext onDragEnd={this.onDragEnd}>
-        <Container>
-          {this.state.lists.map(list => {
-            const cards = list.cardIds.map(
-              cardId => this.state.cards.find(card => card.id === cardId)!
-            );
-            return <List key={list.id} list={list} cards={cards} />;
-          })}
-        </Container>
-      </DragDropContext>
+      <div>
+        <BoardTitle>✏ Lorem Ipsum Task Board</BoardTitle>
+        <RefreshBanner>
+          Updated{' '}
+          <TimeAgo
+            date={this.props.lastFetchDate}
+            formatter={(value, unit, suffix) => {
+              if (unit === 'second') {
+                return 'just now';
+              } else {
+                return value + ' ' + unit + (value > 1 ? 's' : '') + ' ' + suffix;
+              }
+            }}
+          />
+          , <RefreshLink onClick={this.props.refetch}>refresh</RefreshLink>
+        </RefreshBanner>
+        <DragDropContext onDragEnd={this.onDragEnd}>
+          <Container>
+            {this.state.lists.map(list => {
+              const cards = list.cardIds.map(
+                cardId => this.state.cards.find(card => card.id === cardId)!
+              );
+              return <List key={list.id} list={list} cards={cards} />;
+            })}
+          </Container>
+        </DragDropContext>
+      </div>
     );
   }
 }

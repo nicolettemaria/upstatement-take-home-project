@@ -7,16 +7,9 @@ const Container = styled.div`
   padding: 75px 200px 0 200px;
 `;
 
-const BoardTitle = styled.h1`
-  font-weight: 600;
-  text-align: left;
-  margin-bottom: 15px;
-`;
-
 const App: React.FC = () => {
   return (
     <Container>
-      <BoardTitle>✏ Lorem Ipsum Task Board</BoardTitle>
       <ConnectedBoardPage />
     </Container>
   );

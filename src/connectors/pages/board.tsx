@@ -27,6 +27,8 @@ const ConnectedBoardPage: React.FC = () => {
               .map(acceptedName => acceptedName.toLowerCase())
               .includes(list.name.toLowerCase())
         )}
+      lastFetchDate={trelloStateManagement.timeRequested}
+      refetch={trelloStateManagement.refetch}
       moveCard={(cardToMove, cardAbove, cardBelow, listId) => {
         // calculate new position, pass to trello hook
         trelloStateManagement.moveCard(

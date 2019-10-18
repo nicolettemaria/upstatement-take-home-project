@@ -11,6 +11,7 @@ export interface ITrelloStateManagement extends ITrackedTrelloState {
   timeRequested: Date;
   state: ITrelloState;
 
+  refetch(): Promise<void>;
   moveCard(cardId: string, pos: number, listId?: string): void;
 }
 
@@ -52,6 +53,9 @@ export default function useTrelloState(): ITrelloStateManagement {
     async moveCard(cardId: string, pos: number, listId?: string): Promise<void> {
       console.log(cardId, pos, listId);
       await moveTrelloCard(cardId, pos, listId);
+      await getNewTrelloState();
+    },
+    async refetch(): Promise<void> {
       await getNewTrelloState();
     }
   };

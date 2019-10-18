@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import Card from '../atoms/card';
 import { Droppable } from 'react-beautiful-dnd';
-import { IBoardCard, IBoardList } from '../pages/board';
+import { IBoardCard, IBoardList } from '../lib';
 
 const Container = styled.div`
   margin: 8px;

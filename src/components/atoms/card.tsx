@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { Draggable } from 'react-beautiful-dnd';
-import { ELabelColor, IBoardCard, labelColorToString } from '../pages/board';
+import { ELabelColor, IBoardCard, labelColorToString } from '../lib';
 
 interface IContainerProps {
   isDragging: boolean;

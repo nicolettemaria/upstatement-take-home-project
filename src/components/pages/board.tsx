@@ -28,7 +28,7 @@ const BoardTitle = styled.h1`
 const RefreshBanner = styled.div`
   display: inline-block;
   margin-left: 20px;
-  opacity: 0.5;
+  opacity: 0.4;
 `;
 
 const RefreshButton = styled.a`

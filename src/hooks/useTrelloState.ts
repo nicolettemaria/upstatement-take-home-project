@@ -15,9 +15,9 @@ export interface ITrelloStateManagement extends ITrackedTrelloState {
   moveCard(cardId: string, pos: number, listId?: string): void;
 }
 
-// provide trello state to components
+// Provide trello state to components.
 export default function useTrelloState(): ITrelloStateManagement {
-  // set initial Trello state
+  // Set initial Trello state.
   const [trelloState, setTrelloState] = React.useState<ITrackedTrelloState>({
     timeRequested: new Date(),
     state: {
@@ -29,7 +29,7 @@ export default function useTrelloState(): ITrelloStateManagement {
   const getNewTrelloState = () => {
     const newQueryTimeRequested = new Date();
 
-    // wait for network call to return, then set state, else catch error
+    // Wait for network call to return, then set state, else catch error.
     getTrelloState()
       .then(newState => {
         setTrelloState({
@@ -39,11 +39,10 @@ export default function useTrelloState(): ITrelloStateManagement {
       })
       .catch(e => {
         throw e;
-        // TODO surface to the user an error occurred
       });
   };
 
-  // do network call on component mount
+  // Do network call on component mount.
   React.useEffect(() => {
     getNewTrelloState();
   }, []);
@@ -63,7 +62,7 @@ export default function useTrelloState(): ITrelloStateManagement {
 
 const baseParams = `key=${process.env.REACT_APP_TRELLO_API_KEY}&token=${process.env.REACT_APP_TRELLO_DEBUG_TOKEN}`;
 
-// retrieve trello state via network call
+// Retrieve trello state via network call.
 async function getTrelloState(): Promise<ITrelloState> {
   const baseURL = `https://api.trello.com/1/boards/${process.env.REACT_APP_TRELLO_SELECTED_BOARD_ID}`;
 

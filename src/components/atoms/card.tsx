@@ -8,7 +8,6 @@ interface IContainerProps {
 }
 
 const Container = styled.div<IContainerProps>`
-  // border: 1px solid lightgrey;
   border-radius: 3px;
   padding: 8px;
   margin-bottom: 8px;
@@ -20,13 +19,13 @@ const Container = styled.div<IContainerProps>`
   background-color: white;
 `;
 
-interface ITagProps {
-  color: string;
-}
-
 const TagGroup = styled.div`
   padding-top: 5px;
 `;
+
+interface ITagProps {
+  color: string;
+}
 
 const Tag = styled.div<ITagProps>`
   position: relative;
@@ -59,6 +58,9 @@ export interface ICardProps {
 }
 
 const Card: React.FC<ICardProps> = props => {
+
+  // Draggable is used for tracking drag and drop events,
+  // and the position of the card when it is being dragged.
   return (
     <Draggable draggableId={props.card.id} index={props.index}>
       {(provided, snapshot) => (

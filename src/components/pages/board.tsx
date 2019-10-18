@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { DragDropContext, DropResult, ResponderProvided } from 'react-beautiful-dnd';
+import { DragDropContext, DropResult} from 'react-beautiful-dnd';
 import List from '../molecules/list';
 import produce from 'immer';
 import TimeAgo from 'react-timeago';
@@ -69,6 +69,7 @@ class BoardPage extends React.Component<IBoardPageProps, IBoardPageState> {
     };
   }
 
+  // Updates local state after dragging a card, then updates Trello state.
   onDragEnd = (result: DropResult) => {
     const { destination, source, draggableId } = result;
 
@@ -80,9 +81,12 @@ class BoardPage extends React.Component<IBoardPageProps, IBoardPageState> {
       return;
     }
 
+    // Origin list of card.
     const start = this.state.lists.find(list => list.id === source.droppableId)!;
+    // Destination list of card.
     const finish = this.state.lists.find(list => list.id === destination.droppableId)!;
 
+    // Gets card above moved card to determine new position of card in list.
     const getCardAboveMovedCard = (
       movedCardId: string,
       inList: IBoardList,
@@ -99,6 +103,7 @@ class BoardPage extends React.Component<IBoardPageProps, IBoardPageState> {
       }
     };
 
+    // Gets card below moved card to determine new position of card in list.
     const getCardBelowMovedCard = (
       movedCardId: string,
       inList: IBoardList,
@@ -115,8 +120,8 @@ class BoardPage extends React.Component<IBoardPageProps, IBoardPageState> {
       }
     };
 
+    // Moves card within a list.
     if (start.id === finish.id) {
-      // move within list
       const newState = produce(this.state, draftState => {
         const startList = draftState.lists.find(list => list.id === start.id)!;
 
@@ -126,7 +131,9 @@ class BoardPage extends React.Component<IBoardPageProps, IBoardPageState> {
         });
       });
 
+      // Sets local state.
       this.setState(newState);
+      // Sets remote state.
       const destinationList = newState.lists.find(list => list.id === finish.id)!;
       this.props.moveCard(
         newState.cards.find(card => card.id === draggableId)!,
@@ -137,7 +144,7 @@ class BoardPage extends React.Component<IBoardPageProps, IBoardPageState> {
       return;
     }
 
-    // move between lists
+    // Moves card between lists.
     const newState = produce(this.state, draftState => {
       const startList = draftState.lists.find(list => list.id === start.id)!;
 
@@ -152,7 +159,9 @@ class BoardPage extends React.Component<IBoardPageProps, IBoardPageState> {
       });
     });
 
+    // Sets local state.
     this.setState(newState);
+    // Sets remote state.
     const destinationList = newState.lists.find(list => list.id === finish.id)!;
     this.props.moveCard(
       newState.cards.find(card => card.id === draggableId)!,
